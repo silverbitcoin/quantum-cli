@@ -86,10 +86,20 @@ fn validate_package(package: &Package) -> Result<()> {
     Ok(())
 }
 
-/// Create package archive for upload
+/// Create package archive for upload to registry.
+///
+/// Packages the Quantum module into a tar archive containing:
+/// - Manifest file (Quantum.toml)
+/// - Source code files
+/// - Documentation
+/// - Metadata
+///
+/// # Arguments
+/// * `package` - The package to archive
+///
+/// # Returns
+/// A vector of bytes containing the tar archive data
 fn create_package_archive(package: &Package) -> Result<Vec<u8>> {
-    use std::io::Write;
-    
     let mut archive = Vec::new();
     let mut tar = tar::Builder::new(&mut archive);
     

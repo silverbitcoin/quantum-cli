@@ -189,7 +189,13 @@ impl Manifest {
         Ok(())
     }
     
-    /// Get all dependencies (including dev dependencies)
+    /// Get all dependencies (including dev dependencies).
+    ///
+    /// Returns a map of all dependencies and dev dependencies combined.
+    ///
+    /// # Returns
+    /// A HashMap containing all dependencies with their names as keys
+    #[allow(dead_code)]
     pub fn all_dependencies(&self) -> HashMap<String, &Dependency> {
         let mut deps = HashMap::new();
         

@@ -56,7 +56,7 @@ fn run_tests(package: &Package, filter: Option<&str>) -> Result<TestResults> {
     let source_files = package.source_files()?;
     
     let mut passed = 0;
-    let mut failed = 0;
+    let failed = 0;
     
     for source_file in &source_files {
         let source = std::fs::read_to_string(source_file)?;

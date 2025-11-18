@@ -41,7 +41,16 @@ impl Lockfile {
         }
     }
     
-    /// Load lockfile from Quantum.lock
+    /// Load lockfile from Quantum.lock.
+    ///
+    /// Reads and parses the lockfile containing resolved dependencies.
+    ///
+    /// # Arguments
+    /// * `path` - Path to the Quantum.lock file
+    ///
+    /// # Returns
+    /// The parsed lockfile
+    #[allow(dead_code)]
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Self> {
         let content = std::fs::read_to_string(path.as_ref())
             .context("Failed to read Quantum.lock")?;

@@ -5,6 +5,7 @@
 use crate::package::Package;
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
+use base64::Engine;
 
 /// Default registry URL
 const DEFAULT_REGISTRY_URL: &str = "https://registry.silverbitcoin.org";
@@ -44,7 +45,7 @@ impl Registry {
             description: package.manifest.package.description.clone(),
             license: package.manifest.package.license.clone(),
             repository: package.manifest.package.repository.clone(),
-            archive_data: base64::encode(&archive),
+            archive_data: base64::engine::general_purpose::STANDARD.encode(&archive),
         };
         
         let response = self.client
@@ -81,7 +82,16 @@ impl Registry {
         Ok(archive)
     }
     
-    /// Search for packages in the registry
+    /// Search for packages in the registry.
+    ///
+    /// Queries the registry for packages matching the search term.
+    ///
+    /// # Arguments
+    /// * `query` - The search query string
+    ///
+    /// # Returns
+    /// A vector of matching package information
+    #[allow(dead_code)]
     pub async fn search(&self, query: &str) -> Result<Vec<PackageInfo>> {
         let search_url = format!("{}/api/v1/packages/search?q={}", self.url, query);
         
@@ -112,17 +122,34 @@ struct PublishRequest {
     archive_data: String,
 }
 
-/// Package information
+/// Package information from the registry.
+///
+/// Contains metadata about a published package:
+/// - Name and version
+/// - Description
+/// - Download count
 #[derive(Debug, Deserialize)]
 pub struct PackageInfo {
+    /// The package name
+    #[allow(dead_code)]
     pub name: String,
+    /// The package version
+    #[allow(dead_code)]
     pub version: String,
+    /// Optional package description
+    #[allow(dead_code)]
     pub description: Option<String>,
+    /// Number of downloads
+    #[allow(dead_code)]
     pub downloads: u64,
 }
 
-/// Search response
+/// Search response from the registry.
+///
+/// Contains the list of packages matching a search query.
 #[derive(Debug, Deserialize)]
 struct SearchResponse {
+    /// The list of matching packages
+    #[allow(dead_code)]
     packages: Vec<PackageInfo>,
 }

@@ -5,7 +5,7 @@
 use crate::manifest::{Dependency, DetailedDependency, Manifest};
 use crate::registry::Registry;
 use anyhow::{Context, Result};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, VecDeque};
 use std::path::{Path, PathBuf};
 
 /// Dependency resolver
@@ -120,10 +120,17 @@ impl DependencyResolver {
         })
     }
     
-    /// Resolve a git dependency
+    /// Resolve a git dependency from a remote repository.
+    ///
+    /// Clones the repository, checks out the specified ref, and loads the manifest.
+    ///
+    /// # Arguments
+    /// * `_name` - The dependency name
+    /// * `git_url` - The git repository URL
+    /// * `detailed` - Detailed dependency specification with branch/tag/rev
     async fn resolve_git_dependency(
         &self,
-        name: &str,
+        _name: &str,
         git_url: &str,
         detailed: &DetailedDependency,
     ) -> Result<DependencyInfo> {
@@ -190,25 +197,53 @@ impl ResolvedDependencies {
         &self.dependencies
     }
     
-    /// Get dependency by name
+    /// Get dependency by name.
+    ///
+    /// # Arguments
+    /// * `name` - The dependency name to look up
+    ///
+    /// # Returns
+    /// A reference to the dependency info if found
+    #[allow(dead_code)]
     pub fn get(&self, name: &str) -> Option<&DependencyInfo> {
         self.dependencies.get(name)
     }
 }
 
-/// Information about a resolved dependency
+/// Information about a resolved dependency.
+///
+/// Contains all metadata about a dependency including:
+/// - Name and version
+/// - Local path where it's stored
+/// - Manifest with configuration
+/// - Source (registry, path, or git)
 pub struct DependencyInfo {
+    /// The dependency name
     pub name: String,
+    /// The dependency version
     pub version: String,
+    /// The local path where the dependency is stored
+    #[allow(dead_code)]
     pub path: PathBuf,
+    /// The dependency's manifest
     pub manifest: Manifest,
+    /// The source of the dependency
     pub source: DependencySource,
 }
 
-/// Dependency source
+/// Dependency source indicating where a dependency comes from.
+///
+/// Specifies the origin of a dependency:
+/// - Registry: Downloaded from the package registry
+/// - Path: Local filesystem path
+/// - Git: Remote git repository
 pub enum DependencySource {
+    /// Dependency from the package registry
     Registry,
+    /// Dependency from a local filesystem path
     Path,
+    /// Dependency from a git repository
+    #[allow(dead_code)]
     Git,
 }
 

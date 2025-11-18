@@ -119,8 +119,17 @@ pub async fn execute(release: bool, output: Option<&str>) -> Result<()> {
     Ok(())
 }
 
-/// Compile a single source file
-fn compile_file(path: &Path, release: bool) -> Result<Vec<u8>> {
+/// Compile a single source file to bytecode.
+///
+/// Performs lexical analysis, parsing, type checking, and code generation.
+///
+/// # Arguments
+/// * `path` - Path to the source file
+/// * `_release` - Whether to perform release optimizations
+///
+/// # Returns
+/// The compiled bytecode as a vector of bytes
+fn compile_file(path: &Path, _release: bool) -> Result<Vec<u8>> {
     // Read source code
     let source = fs::read_to_string(path)
         .context(format!("Failed to read source file: {}", path.display()))?;
